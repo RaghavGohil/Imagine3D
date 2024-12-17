@@ -11,6 +11,8 @@
 #include <glm/gtx/string_cast.hpp>
 
 // globals
+int windowWidth = 800;
+int windowHeight = 600;
 bool firstMouse = true;
 double lastX,lastY;
 
@@ -28,7 +30,10 @@ glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 glm::vec3 cameraRotation = glm::vec3(0.0f, -90.0f, 0.0f); // pitch, yaw, roll (x,y,z)
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    windowWidth = width;
+    windowHeight = height;
     glViewport(0, 0, width, height);
+    std::cout << windowWidth << " " << windowHeight << std::endl;
 }
 
 void processInput(GLFWwindow* window) {
@@ -37,7 +42,7 @@ void processInput(GLFWwindow* window) {
     }
     
     if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE); //wireframe mode
     else
         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 }
@@ -51,8 +56,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         firstMouse = false;
     }
   
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; 
+    float xoffset = (float) (xpos - lastX);
+    float yoffset = (float) (lastY - ypos); 
     lastX = xpos;
     lastY = ypos;
 
@@ -73,10 +78,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     direction.y = sin(glm::radians(cameraRotation.x));
     direction.z = sin(glm::radians(cameraRotation.y)) * cos(glm::radians(cameraRotation.x));
     cameraFront = glm::normalize(direction);
-    std::cout << "camara direction" << glm::to_string(direction) << std::endl; 
-    std::cout << "camara rotation" << glm::to_string(cameraRotation) << std::endl; 
-    std::cout << "camara front" << glm::to_string(cameraFront) << std::endl; 
-    std::cout << "camara position" << glm::to_string(cameraPos) << std::endl; 
 } 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -224,8 +225,9 @@ int main() {
         // Draw calls 
         // Go 3d
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-        glm::mat4 projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+        //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        glm::mat4 projection = glm::perspective(glm::radians(fov), ((float)windowWidth) / ((float)windowHeight), 0.1f, 100.0f);
+        //glm::mat4 projection = glm::ortho(0, 800, 600, 0, 0, 1000);
         // move the camera
         glm::mat4 view = glm::lookAt( cameraPos, cameraPos + cameraFront, cameraUp);
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
