@@ -195,19 +195,24 @@ int main() {
     //Unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    // we only need to bind to the VBO, the container's VBO's data already contains the data.
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // set the vertex attribute 
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     //Bind the texture
     Texture *texture = new Texture("dirt_actual.png");
-    glActiveTexture(GL_TEXTURE0); // Texture unit 0
-    texture->bind();
-
     // Create and compile vertex shader
     Shader *shader = new Shader("shaders/def.vert","shaders/def.frag");
-    shader->use(); // use then apply transforms lole
-    shader->setSampler2D("texture",0);
+    Shader *lightShader = new Shader("shaders/light.vert","shaders/light.frag");
 
-    glBindVertexArray(VAO);
     glEnable(GL_DEPTH_TEST);
 
     // Render loop
@@ -218,11 +223,6 @@ int main() {
         // Input handling
         processInput(window);
 
-        // Render
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Draw calls 
         // Go 3d
         glm::mat4 model = glm::mat4(1.0f);
         //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
@@ -243,11 +243,29 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
             cameraPos -= cameraSpeed * cameraUp * (float) deltaTime;
                 
+        
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // 2. Render the textured object
+        shader->use();                      // Use the appropriate shader
+        glActiveTexture(GL_TEXTURE0);       // Set active texture unit
+        texture->bind();                    // Bind the texture
+        shader->setSampler2D("texture", 0); // Set the texture uniform
         shader->setMat4("model",model);
         shader->setMat4("view",view);
         shader->setMat4("projection",projection);
-        glDrawArrays(GL_TRIANGLES, 0,36);
+        glBindVertexArray(VAO);             // Bind the VAO
+        glDrawArrays(GL_TRIANGLES,0,36);
 
+        glm::mat4 lightModel = glm::mat4(1.0);
+        lightModel = glm::translate(lightModel,glm::vec3(3.0f,0.0f,0.0f));
+        // 3. Render the light source
+        lightShader->use();                 // Use the light shader
+        lightShader->setMat4("model",lightModel);
+        lightShader->setMat4("view",view);
+        lightShader->setMat4("projection",projection);
+        glBindVertexArray(lightVAO);        // Bind the light source VAO
+        glDrawArrays(GL_TRIANGLES,0,36);
         // Swap buffers and poll for events
         glfwSwapBuffers(window);
         glfwPollEvents();
