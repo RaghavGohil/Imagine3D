@@ -23,6 +23,7 @@ double lastTime = 0.0f;
 //Camera
 Camera* camera = new Camera();
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     windowWidth = width;
     windowHeight = height;
@@ -179,14 +180,16 @@ int main() {
     //Bind the texture
     Texture *texture = new Texture("dirt_actual.png");
     // Create and compile vertex shader
-    Shader *shader = new Shader("shaders/def.vert","shaders/def.frag");
+    Shader *shader = new Shader("shaders/def.vert","shaders/lit_spot.frag");
     Shader *lightShader = new Shader("shaders/light.vert","shaders/light.frag");
 
     glEnable(GL_DEPTH_TEST);
 
     //light
     float lightAngle = 0.0f;
+    float lightX = 0.0f;
     float lightRotSpeed = 30.0f;
+    float lightMoveSpeed = 0.2f;
 
     // Render loop
     while (!glfwWindowShouldClose(window)) {
@@ -203,8 +206,8 @@ int main() {
 
         glm::mat4 lightModel = glm::mat4(1.0);
         lightAngle += lightRotSpeed * (float) deltaTime;
-        lightModel = glm::rotate(lightModel,glm::radians(lightAngle),glm::vec3(0,1,0)); 
-        lightModel = glm::translate(lightModel,glm::vec3(2.0f,2.0f,2.0f));
+        lightX += lightMoveSpeed * (float) deltaTime;
+        lightModel = glm::translate(lightModel,glm::vec3(lightX,2.0f,2.0f));
         lightShader->use();                 
         lightShader->setMat4("model",lightModel);
         lightShader->setMat4("view",camera->view);
@@ -221,6 +224,7 @@ int main() {
         shader->setVec3("lightPos",lightModel[3]);
         shader->setMat4("view",camera->view);
         shader->setVec3("viewPos",camera->position);
+        shader->setVec3("front",camera->front);
         shader->setMat4("projection",camera->projection);
         glBindVertexArray(VAO);             
         glDrawArrays(GL_TRIANGLES,0,36);

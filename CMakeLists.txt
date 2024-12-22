@@ -27,4 +27,4 @@ set(SOURCES
 add_executable(VoxelEngine ${SOURCES})
 
 # Link libraries
-target_link_libraries(VoxelEngine PRIVATE opengl32 glfw3)
+target_link_libraries(VoxelEngine PRIVATE opengl32 glfw3 assimp-vc143-mtd)
