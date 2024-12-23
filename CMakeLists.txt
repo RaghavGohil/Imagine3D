@@ -19,8 +19,9 @@ set(SOURCES
     src/glad.c
     src/main.cpp
     src/shader.cpp
-    src/texture.cpp
     src/camera.cpp
+    src/mesh.cpp
+    src/model.cpp
 )
 
 # Create the executable
