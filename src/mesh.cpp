@@ -33,6 +33,12 @@ void Mesh::setupMesh()
     // vertex texture coords
     glEnableVertexAttribArray(2);	
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+    // tangent
+    glEnableVertexAttribArray(3);	
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+    //bitangent
+    glEnableVertexAttribArray(4);	
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
     glBindVertexArray(0);
 }  
@@ -65,6 +71,9 @@ void Mesh::draw(Shader &shader)
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+
+
+    shader.setMat4("model",this->model);
     
     // draw mesh
     glBindVertexArray(VAO);

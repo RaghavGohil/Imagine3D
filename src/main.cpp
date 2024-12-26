@@ -156,9 +156,11 @@ int main() {
     Shader *lightShader = new Shader("shaders/light.vert","shaders/light.frag");
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
 
     //Model
-    Model* model = new Model("Desert_Eagle.fbx");
+    Model* model = new Model("scene.gltf");
 
 
     //light
@@ -181,7 +183,7 @@ int main() {
         glm::mat4 lightModel = glm::mat4(1.0);
         lightAngle += lightRotSpeed * (float) deltaTime;
         lightModel = glm::rotate(lightModel,glm::radians(lightAngle),glm::vec3(0.0f,1.0f,0.0f));
-        lightModel = glm::translate(lightModel,glm::vec3(5.0f,0.0f,2.0f));
+        lightModel = glm::translate(lightModel,glm::vec3(3.0f,0.0f,2.0f));
         lightShader->use();                 
         lightShader->setMat4("model",lightModel);
         lightShader->setMat4("view",camera->view);
@@ -194,6 +196,7 @@ int main() {
         shader->setMat4("model",modelModel);
         shader->setMat4("view",camera->view);
         shader->setMat4("projection",camera->projection);
+        shader->setVec3("lightPos",lightModel[3]);
 
         model->draw(*shader);
 

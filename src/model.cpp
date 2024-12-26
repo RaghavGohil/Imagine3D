@@ -20,22 +20,29 @@ void Model::loadModel(std::string path)
     }
     directory = path.substr(0, path.find_last_of('/'));
 
-    processNode(scene->mRootNode, scene);
+    processNode(scene->mRootNode, scene, glm::mat4(1.0f));
 }
 
-void Model::processNode(aiNode *node, const aiScene *scene)
+void Model::processNode(aiNode *node, const aiScene *scene, glm::mat4 parentTransform)
 {
-    // process all the node's meshes (if any)
-    for(unsigned int i = 0; i < node->mNumMeshes; i++)
+    // Convert Assimp transformation matrix to GLM matrix
+    glm::mat4 nodeTransform = glm::transpose(glm::make_mat4(&node->mTransformation.a1));
+    glm::mat4 globalTransform = parentTransform * nodeTransform;
+
+    // Process all the node's meshes
+    for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
-        aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
-        meshes.push_back(processMesh(mesh, scene));			
+        aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+        Mesh processedMesh = processMesh(mesh, scene);
+        processedMesh.model = globalTransform; // Save the transformation for the mesh
+        meshes.push_back(processedMesh);
     }
-    // then do the same for each of its children
-    for(unsigned int i = 0; i < node->mNumChildren; i++)
+
+    // Process all child nodes
+    for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene);
-    }
+        processNode(node->mChildren[i], scene, globalTransform);
+    } 
 } 
 
 Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
@@ -80,6 +87,25 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
             vertex.TexCoords = glm::vec2(0.0f, 0.0f); // No texture coordinates
         }
 
+        // Tangents and Bitangents
+        if (mesh->HasTangentsAndBitangents())
+        {
+            vector.x = mesh->mTangents[i].x;
+            vector.y = mesh->mTangents[i].y;
+            vector.z = mesh->mTangents[i].z;
+            vertex.Tangent = vector;
+
+            vector.x = mesh->mBitangents[i].x;
+            vector.y = mesh->mBitangents[i].y;
+            vector.z = mesh->mBitangents[i].z;
+            vertex.Bitangent = vector;
+        }
+        else
+        {
+            vertex.Tangent = glm::vec3(0.0f, 0.0f, 0.0f); // Default value if tangents are not available
+            vertex.Bitangent = glm::vec3(0.0f, 0.0f, 0.0f); // Default value if bitangents are not available
+        }
+
         // Add the vertex to the vertices vector
         vertices.push_back(vertex);
     }
@@ -113,6 +139,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     // Return the mesh object created from the extracted mesh data
     return Mesh(vertices, indices, textures);
 }
+
 
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
@@ -155,7 +182,7 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
     glGenTextures(1, &textureID); // Generate the texture ID
 
     int width, height, nrComponents;
-    unsigned char *data = stbi_load("Desert_Eagle.fbm/Brushed_Metal_Diffuse.jpg", &width, &height, &nrComponents, 0); // Load the image
+    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0); // Load the image
     if (data)
     {
         GLenum format;

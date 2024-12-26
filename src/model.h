@@ -18,9 +18,10 @@ class Model
         std::vector<Mesh> meshes;
         std::string directory;
         std::vector<Texture> textures_loaded; 
+    
 
         void loadModel(std::string path);
-        void processNode(aiNode *node, const aiScene *scene);
+        void processNode(aiNode *node, const aiScene *scene, glm::mat4 parentTransform);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
         unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma);
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
