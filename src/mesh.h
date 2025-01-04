@@ -1,5 +1,6 @@
 #pragma once
 #include "shader.h"
+#include "texture.h"
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,12 +13,6 @@ struct Vertex {
     glm::vec3 Tangent;
     glm::vec3 Bitangent;
 };
-
-struct Texture {
-    unsigned int id;
-    std::string type;
-    std::string path;
-};  
 
 class Mesh {
     public:

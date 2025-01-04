@@ -1,6 +1,4 @@
 #include "model.h"
-#define STB_IMAGE_IMPLEMENTATION // define the implemenation code here....
-#include "stb_image.h"
 
 void Model::draw(Shader &shader)
 {
@@ -141,83 +139,35 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 }
 
 
-
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
-{
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
     std::vector<Texture> textures;
-    for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-    {
+
+    // Loop through all textures of the specified type
+    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
         mat->GetTexture(type, i, &str);
-        bool skip = false;
-        for(unsigned int j = 0; j < textures_loaded.size(); j++)
-        {
-            if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
-            {
-                textures.push_back(textures_loaded[j]);
-                skip = true; 
-                break;
+
+        // Check if the texture is already loaded
+        std::string texturePath = str.C_Str();
+        auto it = std::find_if(textures_loaded.begin(), textures_loaded.end(),
+            [&texturePath](const Texture& t) { return t.path == texturePath; });
+
+        if (it != textures_loaded.end()) {
+            // Texture already loaded, add it to the list
+            textures.push_back(*it);
+        } else {
+            // Texture not loaded, load it
+            Texture texture;
+            if (texture.load(texturePath, directory, false)) {
+                texture.type = typeName;
+                texture.path = texturePath; // Store the texture path
+                textures.push_back(texture);
+                textures_loaded.push_back(texture); // Add to loaded textures
+            } else {
+                std::cerr << "Failed to load texture: " << texturePath << std::endl;
             }
         }
-        if(!skip)
-        {   // if texture hasn't been loaded already, load it
-            Texture texture;
-            texture.id = TextureFromFile(str.C_Str(), directory, false);
-            texture.type = typeName;
-            texture.path = str.C_Str();
-            textures.push_back(texture);
-            textures_loaded.push_back(texture); // add to loaded textures
-        }
     }
+
     return textures;
-}
-
-unsigned int Model::TextureFromFile(const char *path, const std::string &directory, bool gamma)
-{
-    // Construct the full path to the texture
-    std::string filename = std::string(path);
-    std::cout << filename.c_str() << std::endl;
-
-    unsigned int textureID;
-    glGenTextures(1, &textureID); // Generate the texture ID
-
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0); // Load the image
-    if (data)
-    {
-        GLenum format;
-        if (nrComponents == 1)
-            format = GL_RED; // Single channel grayscale
-        else if (nrComponents == 3)
-            format = GL_RGB; // RGB image
-        else if (nrComponents == 4)
-            format = GL_RGBA; // RGBA image
-        else
-            format = GL_RGB; // Default fallback (use RGB for unknown formats)
-
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        // Set texture parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        // Upload the texture data to OpenGL
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-
-        // Generate mipmaps for the texture if necessary
-        if (format != GL_RED) {
-            glGenerateMipmap(GL_TEXTURE_2D); // Mipmap generation for RGB and RGBA
-        }
-
-        stbi_image_free(data); // Free the loaded image data
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data); // Ensure to free memory if loading fails
-    }
-
-    return textureID;
 }

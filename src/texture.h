@@ -2,16 +2,16 @@
 #include <glad/glad.h>
 #include <string>
 #include <iostream>
-#include "stb_image.h"
   
 class Texture 
 {
 public:
     // the program ID
     unsigned int ID;
+    std::string type;
+    std::string path;
     // constructor reads and builds the texture 
-    Texture(const char* path);
+    Texture();
     // activate/deactivate the texture 
-    void bind() const;
-    void unbind() const;  
+    unsigned int load(std::string path, std::string directory, bool gamma);
 };
