@@ -1,6 +1,7 @@
 #include "camera.h"
 
 Camera::Camera(){}
+Camera::~Camera(){}
 
 void Camera::initlialize(GLFWwindow* window)
 {
