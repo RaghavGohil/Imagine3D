@@ -37,6 +37,6 @@ endif()
 add_custom_command(
     TARGET Game POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/../IM3D/build/bin/Debug/IM3D.dll  # Path to your DLL
+        ${CMAKE_SOURCE_DIR}/../IM3D/bin/bin/Debug/IM3D.dll  # Path to your DLL
         $<TARGET_FILE_DIR:Game>   # Output directory of Game.exe
 )
