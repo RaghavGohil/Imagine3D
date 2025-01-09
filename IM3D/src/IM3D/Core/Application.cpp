@@ -1,5 +1,4 @@
 #include "Application.h"
-#include <iostream>
 namespace IM3D{
     Application::Application(){}
     Application::~Application(){}

@@ -1,5 +1,4 @@
-#include "im3d.h"
-#include <iostream>
+#include "IM3D.h"
 
 int main(int argc, char** argv)
 {

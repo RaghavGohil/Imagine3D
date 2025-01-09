@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
+
 project(IM3D)
 
 # Specify the C++ standard
@@ -12,17 +13,23 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/alib)
 
 # Add source files for the engine
 file(GLOB_RECURSE SRC
-    src/IM3D/*.cpp
-    src/IM3D/*.c
+    src/**/*.cpp
+    src/**/*.c
 )
 
 # Define the Imagine3D library as a shared library
 add_library(IM3D SHARED ${SRC}) #dll
 
+# Set precompiled headers 
+target_precompile_headers(IM3D
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/IM3Dpch.h
+)
+
 # Specify include directories for the engine
 target_include_directories(IM3D
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include/imgui
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include/imgui
 )
 
 # Set compile definitions for exporting symbols (for DLLs on Windows)
@@ -33,5 +40,7 @@ target_compile_definitions(IM3D
 )
 
 # Link libraries
-target_link_directories(IM3D PUBLIC vendor/lib)
+target_link_directories(IM3D 
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib
+)
 target_link_libraries(IM3D PRIVATE opengl32 glfw3 assimp-vc143-mtd)

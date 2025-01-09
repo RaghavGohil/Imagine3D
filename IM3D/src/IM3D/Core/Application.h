@@ -1,5 +1,6 @@
 #pragma once
-#include "core.h"
+
+#include "IM3D/Core/PlatformDetection.h"
 
 namespace IM3D{
 
