@@ -1,0 +1,3 @@
+D:/My Data/Cppprojects/github/Game/build/CMakeFiles/Game.dir
+D:/My Data/Cppprojects/github/Game/build/CMakeFiles/ALL_BUILD.dir
+D:/My Data/Cppprojects/github/Game/build/CMakeFiles/ZERO_CHECK.dir
