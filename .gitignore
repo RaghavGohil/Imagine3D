@@ -1,3 +1,25 @@
-build/
-assets/
+# Binaries
+**/bin/
+**/build/
+bin-int/
+Intermediates/
+
+# Build (for now)
 *.bat
+
+# Other files
+*.log
+#(for now)
+**/assets/ 
+
+# Visual Studio files and folder
+.vscode/
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
+
+# Directories
+#scripts/__pycache__
