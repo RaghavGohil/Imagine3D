@@ -21,7 +21,7 @@ target_include_directories(Game PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/src)
 
 # Link IM3D DLL
 message(${CMAKE_SOURCE_DIR})
-target_link_libraries(Game PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/build/alib/Debug/IM3D.lib)
+target_link_libraries(Game PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/bin/alib/Debug/IM3D.lib)
 
 # Add platform-specific macros
 target_compile_definitions(Game PRIVATE IM3D_DYNAMIC_LINK)
