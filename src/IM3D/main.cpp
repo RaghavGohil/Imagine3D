@@ -309,7 +309,9 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
 
+        guiLayer.BeginFrame();
         guiLayer.renderTextureToImGuiWindow(texture);
+        guiLayer.EndFrame();
 
         // Swap buffers and poll for events
         glfwSwapBuffers(window);

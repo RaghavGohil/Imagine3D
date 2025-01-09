@@ -4,6 +4,7 @@
 
 ImGuiLayer::ImGuiLayer(GLFWwindow* window) : window(window)
 {
+
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -16,23 +17,42 @@ ImGuiLayer::ImGuiLayer(GLFWwindow* window) : window(window)
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);   // Install GLFW callbacks
     ImGui_ImplOpenGL3_Init();  // OpenGL backend initialization
+
 }
 
 ImGuiLayer::~ImGuiLayer()
 {
+
     // Clean up ImGui and OpenGL backend
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+
 }
 
-// Function to render an OpenGL texture to an ImGui window
-void ImGuiLayer::renderTextureToImGuiWindow(unsigned int &textureID) const
+void ImGuiLayer::BeginFrame() const
 {
+
     // Start a new ImGui frame
     ImGui_ImplOpenGL3_NewFrame();   // OpenGL backend frame start
     ImGui_ImplGlfw_NewFrame();      // GLFW backend frame start
     ImGui::NewFrame();              // New ImGui frame
+
+}
+
+void ImGuiLayer::EndFrame() const
+{
+
+    // Render ImGui content
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+}
+
+
+// Function to render an OpenGL texture to an ImGui window
+void ImGuiLayer::renderTextureToImGuiWindow(unsigned int &textureID) const
+{
 
     // Get window size and set ImGui display size
     int windowWidth, windowHeight;
@@ -48,7 +68,4 @@ void ImGuiLayer::renderTextureToImGuiWindow(unsigned int &textureID) const
     }
     ImGui::End();
 
-    // Render ImGui content
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

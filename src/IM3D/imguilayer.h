@@ -11,7 +11,8 @@ public:
     ~ImGuiLayer();
     void GLStart() const;
     void GLEnd() const;
-    void render() const;
+    void BeginFrame() const;
+    void EndFrame() const;
     void renderTextureToImGuiWindow(unsigned int &textureID) const;
 private:
     GLFWwindow* window;
