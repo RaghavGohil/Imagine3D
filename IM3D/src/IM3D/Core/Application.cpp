@@ -1,4 +1,3 @@
-#include "IM3Dpch.h"
 #include "IM3D/Core/Application.h"
 
 namespace IM3D{
@@ -8,8 +7,10 @@ namespace IM3D{
 
     void Application::Run() const
     {
-        Log log;
-        std::cout << "IM3D engine is now running!" << std::endl;
+
+        Log::Init();
+        IM3D_LOG_CORE(IM3D_INFO,"IM3D has started running!");
+
     }
 
 };
