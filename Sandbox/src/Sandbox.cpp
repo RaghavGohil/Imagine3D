@@ -1,7 +1,12 @@
 #include "IM3D.h"
 
-int main(int argc, char** argv)
+class Sandbox : public IM3D::Application
 {
-    IM3D::Application application;
-    application.Run();
+public:
+private:
+};
+
+IM3D::Application* IM3D::CreateApplication()
+{
+    return new Sandbox();
 }

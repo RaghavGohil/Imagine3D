@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Project name and language
-project(Game VERSION 1.0 LANGUAGES CXX C)
+project(Sandbox VERSION 1.0 LANGUAGES CXX C)
 
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "/utf-8")
 
 # Source files
 file(GLOB_RECURSE SRC
@@ -14,29 +15,31 @@ file(GLOB_RECURSE SRC
 )
 
 # Create the executable
-add_executable(Game ${SRC})
+add_executable(Sandbox ${SRC})
 
 # Add IM3D include directories (path to Im3d.h)
-target_include_directories(Game PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/src)
+target_include_directories(Sandbox PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/src)
+target_include_directories(Sandbox PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/vendor/include)
 
 # Link IM3D DLL
 message(${CMAKE_SOURCE_DIR})
-target_link_libraries(Game PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/bin/alib/Debug/IM3D.lib)
+target_link_libraries(Sandbox PRIVATE ${CMAKE_SOURCE_DIR}/../IM3D/bin/alib/Debug/IM3D.lib)
 
 # Add platform-specific macros
-target_compile_definitions(Game PRIVATE IM3D_DYNAMIC_LINK)
-if (WIN32)
-    target_compile_definitions(Game PRIVATE IM3D_PLATFORM_WINDOWS)
-elseif (APPLE)
-    target_compile_definitions(Game PRIVATE IM3D_PLATFORM_MACOS)
-elseif (UNIX)
-    target_compile_definitions(Game PRIVATE IM3D_PLATFORM_LINUX)
-endif()
+target_compile_definitions(Sandbox PRIVATE IM3D_DYNAMIC_LINK)
+# platform detection is specified in engine definitions. 
+#if (WIN32)
+#    target_compile_definitions(Sandbox PRIVATE IM3D_PLATFORM_WINDOWS)
+#elseif (APPLE)
+#    target_compile_definitions(Sandbox PRIVATE IM3D_PLATFORM_MACOS)
+#elseif (UNIX)
+#    target_compile_definitions(Sandbox PRIVATE IM3D_PLATFORM_LINUX)
+#endif()
 
 # Copy DLL to output directory
 add_custom_command(
-    TARGET Game POST_BUILD
+    TARGET Sandbox POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/../IM3D/bin/bin/Debug/IM3D.dll  # Path to your DLL
-        $<TARGET_FILE_DIR:Game>   # Output directory of Game.exe
+        $<TARGET_FILE_DIR:Sandbox>   # Output directory of Game.exe
 )

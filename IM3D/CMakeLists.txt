@@ -6,6 +6,9 @@ project(IM3D)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#spdlog testing
+set(CMAKE_CXX_FLAGS "/utf-8")
+
 # Set the output directory for the build
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -13,8 +16,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/alib)
 
 # Add source files for the engine
 file(GLOB_RECURSE SRC
-    src/**/*.cpp
-    src/**/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.c
 )
 
 # Define the Imagine3D library as a shared library
@@ -27,7 +30,7 @@ target_precompile_headers(IM3D
 
 # Specify include directories for the engine
 target_include_directories(IM3D
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include/imgui
 )
@@ -35,12 +38,11 @@ target_include_directories(IM3D
 # Set compile definitions for exporting symbols (for DLLs on Windows)
 target_compile_definitions(IM3D
     PRIVATE IM3D_BUILD_DLL
-    PUBLIC IM3D_PLATFORM_WINDOWS
-    PUBLIC IM3D_DYNAMIC_LINK
+    PRIVATE IM3D_DYNAMIC_LINK
 )
 
 # Link libraries
 target_link_directories(IM3D 
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib
 )
-target_link_libraries(IM3D PRIVATE opengl32 glfw3 assimp-vc143-mtd)
+target_link_libraries(IM3D PRIVATE opengl32 glfw3 assimp-vc143-mtd spdlogd)
