@@ -14,6 +14,9 @@ namespace IM3D
     public:
         
         Log() = delete;
+        Log(const Log&) = delete;
+        Log& operator=(const Log&) = delete;
+
         static void Init();
         inline static std::shared_ptr<spdlog::logger>& GetLogCore() { return s_LogCore; }
         inline static std::shared_ptr<spdlog::logger>& GetLogClient() { return s_LogClient; }

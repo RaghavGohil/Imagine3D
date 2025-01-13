@@ -5,12 +5,17 @@ namespace IM3D{
     Application::Application(){}
     Application::~Application(){}
 
-    void Application::Run() const
+    void Application::Init() const
     {
 
         Log::Init();
-        IM3D_LOG_CORE(IM3D_INFO,"IM3D has started running!");
+        Renderer::Init();
+    }
 
+    void Application::Run() const
+    {
+        auto window = Window::Create();
+        while(true);
     }
 
 };

@@ -39,6 +39,7 @@ target_include_directories(IM3D
 target_compile_definitions(IM3D
     PRIVATE IM3D_BUILD_DLL
     PRIVATE IM3D_DYNAMIC_LINK
+    PRIVATE IM3D_ENABLE_DEBUG
 )
 
 # Link libraries

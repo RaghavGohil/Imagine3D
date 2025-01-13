@@ -3,6 +3,8 @@
 #include "IM3Dpch.h"
 #include "IM3D/Core/PlatformDetection.h"
 #include "IM3D/Core/Log.h"
+#include "IM3D/Renderer/Renderer.h"
+#include "IM3D/Window/Window.h"
 
 namespace IM3D
 {
@@ -14,12 +16,13 @@ namespace IM3D
 
         Application(); 
         ~Application(); 
+        void Init() const;
         void Run() const;
 
     private:
 
     };
 
-    Application* CreateApplication(); // defined in the client for flexibility.
+    std::shared_ptr<Application> CreateApplication(); // defined in the client for flexibility.
 
 };
