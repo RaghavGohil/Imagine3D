@@ -59,16 +59,16 @@ graph TD
     A[Application Layer] --> B[Engine Core]
     B --> C[Renderer]
     C --> D[Platform Layer]
-    
+
     A1[User Game Code] -.-> A
     B1[Logging, Events, Input] -.-> B
     C1[Graphics & Rendering] -.-> C
     D1[OS Abstraction] -.-> D
-    
-    style A fill:#e1f5fe
-    style B fill:#f3e5f5
-    style C fill:#e8f5e8
-    style D fill:#fff3e0
+
+    style A fill:#1565c0,stroke:#90caf9,color:#ffffff
+    style B fill:#6a1b9a,stroke:#ce93d8,color:#ffffff
+    style C fill:#2e7d32,stroke:#a5d6a7,color:#ffffff
+    style D fill:#ef6c00,stroke:#ffcc80,color:#ffffff
 ```
 
 ### Key Components
